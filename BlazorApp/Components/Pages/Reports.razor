@@ -1,0 +1,74 @@
+@page "/reports"
+@rendermode InteractiveServer
+@inject ApiClient Api
+
+<PageTitle>Reports</PageTitle>
+
+<h1>Inventory Report</h1>
+
+@if (_loading)
+{
+    <p><em>Loading...</em></p>
+}
+else if (_error != null)
+{
+    <p class="validation-message">@_error</p>
+}
+else if (_summary != null)
+{
+    <div class="report-cards">
+        <div class="card">
+            <span class="card-label">Total Products</span>
+            <span class="card-value">@_summary.TotalProducts</span>
+        </div>
+        <div class="card">
+            <span class="card-label">Low Stock (&lt; 10)</span>
+            <span class="card-value warning">@_summary.LowStockCount</span>
+        </div>
+    </div>
+
+    <h2>By Category</h2>
+    <div class="table-wrapper">
+        <table class="datatable">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Count</th>
+                    <th>Total Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in _summary.ByCategory)
+                {
+                    <tr>
+                        <td>@row.Category</td>
+                        <td>@row.Count</td>
+                        <td>@row.TotalValue.ToString("C2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private ReportSummary? _summary;
+    private bool _loading = true;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _summary = await Api.GetReportSummaryAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load report: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}

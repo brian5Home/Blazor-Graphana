@@ -1,0 +1,184 @@
+@page "/products"
+@rendermode InteractiveServer
+@inject ApiClient Api
+@inject IJSRuntime JS
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+@if (_loading)
+{
+    <p><em>Loading...</em></p>
+}
+else if (_error != null)
+{
+    <p class="validation-message">@_error</p>
+}
+else
+{
+    <div class="toolbar">
+        <button class="btn btn-primary" @onclick="OpenCreate">Add Product</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="datatable">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Unit Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in _products)
+                {
+                    <tr>
+                        <td>@p.Id</td>
+                        <td>@p.Name</td>
+                        <td>@p.Category</td>
+                        <td>@p.UnitPrice.ToString("C2")</td>
+                        <td>@p.StockQuantity</td>
+                        <td>
+                            <button class="btn btn-sm" @onclick="() => OpenEdit(p)">Edit</button>
+                            <button class="btn btn-sm btn-danger" @onclick="() => ConfirmDelete(p)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (_showModal)
+{
+    <div class="modal-backdrop" @onclick="CloseModal"></div>
+    <div class="modal">
+        <h3>@(_editId == 0 ? "New Product" : "Edit Product")</h3>
+        <EditForm Model="_editProduct" OnValidSubmit="SaveProduct">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label>Name</label>
+                <InputText @bind-Value="_editProduct.Name" class="form-control" />
+                <ValidationMessage For="@(() => _editProduct.Name)" />
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <InputTextArea @bind-Value="_editProduct.Description" class="form-control" rows="2" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Category</label>
+                    <InputText @bind-Value="_editProduct.Category" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Unit Price</label>
+                    <InputNumber @bind-Value="_editProduct.UnitPrice" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Stock</label>
+                    <InputNumber @bind-Value="_editProduct.StockQuantity" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn" @onclick="CloseModal">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private List<Product> _products = new();
+    private bool _loading = true;
+    private string? _error;
+    private bool _showModal;
+    private int _editId;
+    private Product _editProduct = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        _loading = true;
+        _error = null;
+        try
+        {
+            _products = await Api.GetProductsAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load products: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void OpenCreate()
+    {
+        _editId = 0;
+        _editProduct = new Product { Category = "General" };
+        _showModal = true;
+    }
+
+    private void OpenEdit(Product p)
+    {
+        _editId = p.Id;
+        _editProduct = new Product
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Description = p.Description,
+            Category = p.Category,
+            UnitPrice = p.UnitPrice,
+            StockQuantity = p.StockQuantity
+        };
+        _showModal = true;
+    }
+
+    private async Task SaveProduct()
+    {
+        try
+        {
+            if (_editId == 0)
+                await Api.CreateProductAsync(_editProduct);
+            else
+                await Api.UpdateProductAsync(_editId, _editProduct);
+            CloseModal();
+            await LoadProducts();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private async Task ConfirmDelete(Product p)
+    {
+        if (await JS.InvokeAsync<bool>("confirm", $"Delete '{p.Name}'?"))
+        {
+            try
+            {
+                await Api.DeleteProductAsync(p.Id);
+                await LoadProducts();
+            }
+            catch (Exception ex)
+            {
+                _error = ex.Message;
+            }
+        }
+    }
+
+    private void CloseModal()
+    {
+        _showModal = false;
+    }
+}

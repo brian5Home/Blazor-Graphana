@@ -1,0 +1,19 @@
+@inherits LayoutComponentBase
+
+<div class="layout">
+    <nav class="sidebar">
+        <div class="brand">Blazor Grafana App</div>
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">Home</NavLink>
+        <NavLink class="nav-link" href="products">Products</NavLink>
+        <NavLink class="nav-link" href="reports">Reports</NavLink>
+    </nav>
+    <main class="main">
+        @Body
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

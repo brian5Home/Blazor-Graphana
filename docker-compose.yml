@@ -1,0 +1,96 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 10s
+      start_period: 40s
+
+  api:
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=BlazorGrafanaDb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
+      Otlp__Endpoint: "http://otel-collector:4317"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    ports:
+      - "5080:8080"
+    restart: on-failure
+
+  blazorapp:
+    build:
+      context: .
+      dockerfile: BlazorApp/Dockerfile
+    environment:
+      Api__BaseUrl: "http://api:8080"
+      Otlp__Endpoint: "http://otel-collector:4317"
+    depends_on:
+      - api
+      - otel-collector
+    ports:
+      - "5000:8080"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.109.0
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes:
+      - ./docker/otel-collector-config.yaml:/etc/otel/config.yaml:ro
+    ports:
+      - "14317:4317"
+      - "14318:4318"
+    depends_on:
+      - tempo
+      - loki
+
+  tempo:
+    image: grafana/tempo:2.3.1
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./docker/tempo-config.yaml:/etc/tempo.yaml:ro
+      - tempo_data:/var/tempo
+    ports:
+      - "3200:3200"
+      - "4317:4317"
+
+  loki:
+    image: grafana/loki:2.9.4
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./docker/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    ports:
+      - "3100:3100"
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: http://localhost:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+      - tempo
+
+volumes:
+  sqlserver_data:
+  tempo_data:
+  loki_data:
+  grafana_data:
