@@ -2,6 +2,20 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Blazor Grafana App</h1>
-<p>This app uses OpenTelemetry to send traces and metrics to Grafana. Use the sidebar to manage <a href="products">Products</a> (CRUD) or view <a href="reports">Reports</a>.</p>
-<p>When running in Docker Compose, open Grafana to see traces between the Blazor app and the API.</p>
+<div class="page-header">
+    <h1>Blazor Grafana App</h1>
+    <p>Monitor and manage inventory with OpenTelemetry and Grafana.</p>
+</div>
+
+<p class="lead">
+    Use the sidebar to manage <a href="products">Products</a> (CRUD) or view <a href="reports">Reports</a>.
+    When running in Docker Compose, open Grafana to see traces between the Blazor app and the API.
+</p>
+
+<div class="card" style="max-width: 420px;">
+    <span class="card-label">Quick links</span>
+    <p style="margin: 0.5rem 0 0;">
+        <a href="products" class="btn btn-primary" style="margin-right: 0.5rem;">Products</a>
+        <a href="reports" class="btn">Reports</a>
+    </p>
+</div>

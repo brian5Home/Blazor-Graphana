@@ -29,11 +29,12 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Only redirect to HTTPS when not in Docker (Docker typically serves HTTP only; redirection breaks asset loading)
+if (app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
