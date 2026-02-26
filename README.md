@@ -107,4 +107,5 @@ App-by-app documentation and links to official docs: **[docs/APPS.md](docs/APPS.
 - **[docs/README.md](docs/README.md)** – Documentation index  
 - **[docs/CREDENTIALS.md](docs/CREDENTIALS.md)** – Grafana, SQL Server, and other credentials  
 - **[docs/APPS.md](docs/APPS.md)** – Per-app/service docs and links to official documentation (Blazor, ASP.NET Core, EF Core, Grafana, Loki, Tempo, OpenTelemetry)  
-- **[docs/GRAFANA_USAGE.md](docs/GRAFANA_USAGE.md)** – How to see the data sent to Grafana (traces, logs) and how to add a data source
+- **[docs/GRAFANA_USAGE.md](docs/GRAFANA_USAGE.md)** – How to see the data sent to Grafana (traces, logs) and how to add a data source  
+- **[docs/GRAFANA_PARTS.md](docs/GRAFANA_PARTS.md)** – Checklist of all Grafana parts and where they are documented

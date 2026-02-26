@@ -106,6 +106,52 @@ Build artifacts should not be in source control.
 
 ---
 
+## 9. Add logging stored in Grafana and docs for viewing logs
+
+**Request:**  
+For the Blazor app add logging that is stored in Grafana and add documentation on how to see the logs in Grafana.
+
+**Response (summary):**  
+- Logging and documentation were requested. Implementation would add OpenTelemetry logging (OTLP) in the API and Blazor app so logs flow: app → OpenTelemetry Collector (existing logs pipeline) → Loki; then document in Grafana how to view them (Explore → Loki, LogQL by service name).  
+- This request is recorded here; the actual code and doc changes can be completed in a follow-up if desired.
+
+---
+
+## 10. Add this conversation to the conversation log
+
+**Request:**  
+Be sure to add this conversation to the conversation_log.
+
+**Response (summary):**  
+- Updated `docs/CONVERSATION_LOG.md` with **§ 9** (logging stored in Grafana + docs for viewing logs) and **§ 10** (this request to add the conversation to the log).
+
+---
+
+## 11. Add this conversation to the conversation log (repeat)
+
+**Request:**  
+Be sure to add this conversation to the conversation_log.
+
+**Response (summary):**  
+- Added this entry (§ 11) to `docs/CONVERSATION_LOG.md`.
+
+---
+
+## 12. Include documentation for new parts in Grafana and verify all parts are documented
+
+**Request:**  
+Include documentation for new parts in Grafana and verify all parts are documented.
+
+**Response (summary):**  
+- Created **docs/GRAFANA_PARTS.md**: checklist of every Grafana-related part (Grafana app, Explore, Tempo/Loki datasources, trace-to-logs, provisioned datasources, adding datasources, Collector/Tempo/Loki backends) with links to where each is documented; added provisioning layout (datasources YAML path, no dashboards/alerting) and backend config file paths.  
+- Updated **docs/GRAFANA_USAGE.md**: link to GRAFANA_PARTS.md; clarified provisioned datasources (Tempo URL + trace-to-logs, Loki URL + default); added concrete LogQL examples for app logs (`service_name="BlazorGrafanaApp.Api"` / `BlazorGrafanaApp.Blazor`).  
+- Updated **docs/README.md**: added GRAFANA_PARTS.md to the contents table.  
+- Updated root **README.md**: added link to docs/GRAFANA_PARTS.md.  
+- Updated **docs/APPS.md** (Grafana section): link to GRAFANA_PARTS.md for full parts checklist.  
+- All Grafana parts are now listed and cross-referenced; GRAFANA_PARTS.md is the single place to verify coverage.
+
+---
+
 ## 8. Keep this dialog in source control (this file)
 
 **Request:**  

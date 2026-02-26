@@ -4,6 +4,8 @@ This guide explains how to **see the telemetry data** sent to Grafana (traces an
 
 **Prerequisites:** Grafana is running at http://localhost:3000. Log in with **admin** / **admin** (see [CREDENTIALS.md](CREDENTIALS.md)).
 
+**All Grafana parts:** For a checklist of every Grafana-related part in this project and where it is documented, see [GRAFANA_PARTS.md](GRAFANA_PARTS.md).
+
 ---
 
 ## 1. See the data sent to Grafana
@@ -46,7 +48,7 @@ If you add OTLP log export from the apps later, logs will appear in Loki. With t
    - Try a simple query, e.g. `{job="varlogs"}` for default Loki logs, or use the **Log browser** to pick labels.  
    - Set **Time range** and click **Run query**.  
 
-When app logs are sent to Loki via the collector, you can query them by labels such as `service.name` (e.g. `BlazorGrafanaApp.Api`).
+When app logs are sent to Loki via the collector, you can query them by labels such as `service.name` (e.g. `{service_name="BlazorGrafanaApp.Api"}` or `{service_name="BlazorGrafanaApp.Blazor"}`). Loki is set as the **default** data source in this project.
 
 ---
 
@@ -80,6 +82,10 @@ You can add data sources in the UI or by provisioning (YAML). The stack already 
 Data sources can be defined in YAML so they appear automatically (e.g. after a restart). This project already does that for Tempo and Loki.
 
 **Location:** `docker/grafana/provisioning/datasources/datasources.yaml`
+
+**What’s provisioned today:**  
+- **Tempo** – URL `http://tempo:3200`, with **Trace to logs** pointing at Loki (so you can jump from a span to related logs).  
+- **Loki** – URL `http://loki:3100`, set as the default data source.
 
 **Example – add a new datasource** (e.g. Prometheus):
 

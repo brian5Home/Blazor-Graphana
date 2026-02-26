@@ -94,7 +94,7 @@ Overview of each application and service in the Blazor Grafana solution, with li
 
 **Credentials:** See [CREDENTIALS.md](CREDENTIALS.md#grafana).
 
-**Usage:** Explore → Tempo (trace by service name, e.g. `BlazorGrafanaApp.Blazor`, `BlazorGrafanaApp.Api`); Explore → Loki for logs.
+**Usage:** Explore → Tempo (trace by service name, e.g. `BlazorGrafanaApp.Blazor`, `BlazorGrafanaApp.Api`); Explore → Loki for logs. For a checklist of all Grafana parts and where they are documented, see [GRAFANA_PARTS.md](GRAFANA_PARTS.md).
 
 ### Further reading
 

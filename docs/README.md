@@ -9,6 +9,7 @@ Documentation for the Blazor Grafana solution.
 | [CREDENTIALS.md](CREDENTIALS.md) | **Grafana, SQL Server, and other default credentials** |
 | [APPS.md](APPS.md) | **All apps and services** – purpose, config, and links to official documentation |
 | [GRAFANA_USAGE.md](GRAFANA_USAGE.md) | **How to see data in Grafana** (traces, logs) and **how to add a data source** (UI and YAML) |
+| [GRAFANA_PARTS.md](GRAFANA_PARTS.md) | **All Grafana parts** – checklist of every Grafana-related part and where it is documented |
 | [CONVERSATION_LOG.md](CONVERSATION_LOG.md) | **Conversation log** – each user request and response in markdown, for rereading later |
 
 ## Quick reference
